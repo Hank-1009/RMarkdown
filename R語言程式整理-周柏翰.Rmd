@@ -1,0 +1,935 @@
+---
+title: "R語言code整理"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# 1. Introduction
+
+
+## (1) Calculator
+```{r}
+5 + 3
+
+5 * 3
+
+5 / 3
+
+5 ^ 3
+
+5 %% 3
+
+5 %/% 3
+
+```
+## (2) Sequence
+```{r }
+1:10
+
+seq(1, 10, 2)
+
+seq(1, 10, length.out = 6)
+```
+## (3) Basic features
+We tell R to make the assignment using an arrow “<-”. R also supports
+using “=” in most circumstances. However, “<-” is recommended as it
+makes clear that we are requesting an assignment, rather than stating a
+relation.
+```{r}
+a <- 3 ^ 5
+b = 3 ^ 5
+a
+
+b
+```
+## (4) Special values in R
+Missing value, Not a Number, Infinity, π, and 10^−3:
+```{r}
+NA
+
+NaN 
+
+Inf 
+
+-Inf 
+
+pi
+
+1e-3
+```
+## (5) R us not just an calculator
+There are a lot of functions you can use. Let’s see some related to Statistics.
+
+
+Descriptive statistics:
+```{r}
+
+x <- 1:25
+
+mean(x)
+
+var(x)
+
+median(x)
+
+quantile(x, c(0.1, 0.5, 0.7))
+
+x <- c(1:25, NA)
+summary(x)
+```
+
+# 2. Vectors
+
+## (1) Numeric vector
+```{r}
+vt1 <- c(1:5)
+vt2 <- c(3:6)
+vt2 <- c(vt2, vt1)
+vt2
+```
+Use “seq()” and “rep()” to construct a vector with similar patterns
+```{r}
+seq(1, 5, by = 0.5)
+
+seq(1, 10, length.out = 5)
+
+rep(3, 12)
+
+rep(seq(2, 10, 2), 2)
+
+```
+創建null vector，再進行迭代
+```{r}
+a <- c(3, 5, 9, 10)
+b <- c(14, 15, 17)
+V1 <- c()
+V1 <- c(V1, a, b) 
+V1
+```
+When to use “c( )” and when to use a vector with known length?
+c( ): Easy to add a value into the vector; need not know the length.
+rep(NA, n): With known length and the position of elements.
+
+
+###  elements in the vector
+*Use “unique( )” to return the elements that appear at least one time.
+
+
+*Use “table( )” to count the number of each element from the vector.
+```{r}
+b <- c(3, 3, 3, 3, 5, 5, 1, 2, 10, 10, 8)
+
+unique(b)
+
+table(b)
+```
+Sorting and ordering of a vector
+```{r}
+a <- c(3, 4, 2, 7, 10, 23, 8, 9, 11)
+sort(a)
+
+sort(a, decreasing = TRUE)
+```
+change values in a vector&Deleting elements from a vector
+```{r}
+a <- c(3, 4, 2, 7, 10, 23, 8, 9, 11)
+a[5] <- -3
+a[8] <- -1
+a
+vt1
+vt1[-2]
+## [1] 1 3 4 5
+```
+## (2) Character vectors
+```{r}
+"Hello World!!!"
+
+print("Hello R World!!!")
+
+```
+*Character vector: the vector is made up of strings of characters.
+
+
+*All elements of a vector must be of the same type.
+```{r}
+colors <- c("red", "yellow", "BLUE")
+more.colors <- c(colors, "green", "cyan")
+more.colors
+##An attempt to mix data types in a vector
+z <- c("red", "green", 12)
+z
+```
+Basic operations for character vectors
+```{r}
+y.in.V <- grep("y", more.colors)
+e.in.V <- grep("e", more.colors)
+more.colors[y.in.V]
+more.colors[e.in.V]
+E.in.V <- grep("E", more.colors)
+more.colors[E.in.V]
+```
+-To building up strings, use “paste()”.
+```{r}
+paste(colors, "line") ## with space
+
+paste(colors, "line", sep = "" ) ## no space
+
+## use ";" to seperate strings
+paste("I like", colors, collapse = "; ")
+```
+
+## (3) Logical vectors
+TRUE and FALSE are reserved words denoting logical constants in the R,
+
+
+whereas T and F are global variables whose initial values set to these.
+```{r}
+TRUE
+
+FALSE
+
+T
+
+F
+```
+Binary operators which allow the comparison of values in atomic vectors (relational
+operators).
+
+
+Number: Compare 3 and 5
+
+
+“==”: equal
+
+
+“!=”: not equal
+```{r}
+c(3 < 5, 3 > 5)
+
+c(3 <= 5, 3 >= 5)
+
+3 == 5
+
+3 != 5
+```
+Compare the same location of elements individually.
+```{r}
+B <- c(3, 1, 5, 4, 7); C <- c(23, 1, 44, 5, 3)
+B == C
+
+D <- c(2, 5 ,6, 10)
+B == D
+```
+###  “is.” series
+“is.XYZ()” is any comparison to the type “XYZ” of an object.
+
+is.null()
+
+is.na()
+
+is.nan()
+
+is.infinite()
+
+is.character()
+
+is.integer()
+
+is.numeric()
+```{r}
+is.null(c())
+
+c(is.na(NA), is.na(2))
+```
+
+```{r}
+x1 <- 1:5
+x2 <- c(1:3, 2.2)
+x3 <- colors
+c(is.integer(x1), is.numeric(x1), is.double(x1))
+
+c(is.integer(x2), is.numeric(x2), is.double(x2))
+
+c(is.character(x3), is.numeric(x3))
+```
+Use “class( )” to identify the type of a vector.
+
+```{r}
+a <- c(3, 4, 2, 7)
+b <- c("red", "yellow", "blue")
+c <- c(TRUE, FALSE)
+c(class(a), class(b), class(c))
+
+c(class(2), class(2.0), class(as.integer(2)))
+```
+# 3. Matrix
+
+## (1) Constrct a matrix by row & column
+```{r}
+#by row
+a <- 1:5; b <- 6:10;
+c <- 11:15; d <- 16:20;
+M1 <- rbind(a, b, c, d)
+M1
+#by column
+M2 <- cbind(a, b, c, d)
+M2
+dim(M1)
+dim(M2)
+```
+## (2) Constrct a matrix by longer vector
+```{r}
+X <- 1:20
+matrix(X, nrow = 4, ncol = 5)
+matrix(X, nrow = 4, ncol = 5, byrow = TRUE)
+```
+### Features for a matrix
+```{r}
+M1
+
+dim(M1)
+
+colnames(M1); rownames(M1);
+
+colnames(M1) <- c("V1", "V2", "V3", "V4", "V5")
+
+dimnames(M1)
+
+dimnames(M2)
+
+```
+### Extract elements from a matrix
+```{r}
+M1
+
+M1[5] 
+
+M1[13] 
+
+```
+Recall M1. The names of rows are a, b, c, and d. Take the rows of b and c
+
+The names of columns are V1, V2, V3, V4, and V5. Take the rows of b and
+c and the columns of V2 and V5.
+
+```{r}
+M1[c("b", "c"), ]
+
+M1[c("b", "c"), c("V2", "V5")]
+```
+### simple calculation of matrix
+Note: Use **%*%** to evaluate multiplication of matrices
+```{r}
+A <- matrix(c(1:4), 2, 2)
+A + 3
+A - 1
+A * 5
+A / 4
+
+B <- matrix(c(5:8), 2, 2)
+A + B
+A * B
+#summary statistics
+C <- matrix(1:9, 3, 3)
+colSums(C)
+
+rowSums(C)
+
+colMeans(C)
+
+rowMeans(C)
+
+A %*% B
+
+```
+Tranpose,Diagonal & Determinat
+```{r}
+t(A)
+
+t(C)
+
+diag(A)
+
+diag(B)
+
+det(A)
+
+det(B)
+```
+
+# 4. Control Flow
+## (1) The for loop
+When to use?
+See patterns of behaviour, not just a single instance.
+The for() statement allows one to specify that a certain operation
+should be repeated a fixed number of times.
+### Example:
+Construct a vector as
+Xn+1 = 2Xn + 3,
+where X0 = 3, n = 1, 2, 3, 4, 5, 6, 7.
+```{r}
+vec.X.v1 <- c()
+Xn <- 3
+for(n in 1:7){
+Xn <- 2*Xn + 3
+vec.X.v1 <- c(vec.X.v1, Xn)
+}
+vec.X.v1
+```
+Evaluate n!
+
+n! = n ∗ (n − 1) ∗ (n − 2) ∗ · · · ∗ 2 ∗ 1.
+Try n = 10.
+```{r}
+
+n <- 10
+ans <- 1
+for(j in n:1){
+ans <- ans * j
+}
+ans
+factorial(n)
+
+```
+For loop in matrix
+
+evaluate the mean for each row.
+```{r}
+
+A <- matrix(c(3, 2, 1, 2, 2, 6, 4, 1,
+4, 8, 6, 2, 5, 10, 8, 6,
+3, 4, 3, 4), 4, 5)
+nr <- dim(A)[1]
+m <- c()
+for(j in 1:nr){
+m <- c(m, mean(A[j, ]))
+}
+m
+```
+## (2) The if statement 
+Try to find the locations of NA
+
+Given C = {3, 5, NA, 12, 0.2, NA, −2}, find the locations of NA.
+```{r}
+C <- c(3, 4, NA, 12, 0.2, NA, -2)
+for(i in 1:7){
+if(is.na(C[i])) print(i)
+}
+
+```
+Count the number of each class
+```{r}
+basket <- c("r", "b", "y", "y", "y", "r", "r", "b")
+n.r <- 0; n.b <- 0; n.y <- 0
+for(i in 1:length(basket)){
+if(basket[i] == "r"){
+n.r <- n.r + 1
+}else if(basket[i] == "b"){
+n.b <- n.b + 1
+}else{
+n.y <- n.y + 1
+}
+}
+c(n.r, n.b, n.y)
+```
+Re-assign the value to the class
+
+Let “r” be 1, “b” be 2, and “y” be 3
+```{r}
+v.basket <- rep(NA, length(basket))
+for(i in 1:length(basket)){
+if(basket[i] == "r"){
+v.basket[i] <- 1
+}else if(basket[i] == "b"){
+v.basket[i] <- 2
+}else{
+v.basket[i] <- 3
+}
+}
+v.basket
+
+```
+ifelse(condition, commands when TRUE, commands when FALSE)
+Let “r” be 1, “b” be 2, and “y” be 3
+```{r}
+v.basket <- ifelse(basket == "r", 1, ifelse(basket == "b", 2, 3))
+v.basket
+```
+
+## (3) The  while loop
+The pattern of repetition isn’t known in advance and we need to do some
+calculations and keep going as long as a condition holds. The
+while()statement accomplishes this.
+
+### Relationship between for() and while()
+*while(): Need the initial, condition of stopping, and iteration or
+replacement
+```{r}
+for(j in 1:8){
+print(j)
+}
+
+j <- 1
+while(j <= 8){
+print(j)
+j <- j + 1
+}
+```
+Flip a coin
+```{r}
+coin <- c(0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0,
+1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0,
+0, 0, 0, 0, 0, 0, 1)
+N <- c(); j <- 1
+while(j <= length(coin)){
+n.fail <- 0
+while(coin[j] != 1){
+n.fail <- n.fail + 1
+j <- j + 1
+}
+N <- c(N, n.fail + 1)
+j <- j + 1
+}
+N
+```
+### break,repeat and next
+*break
+
+if (condition) break
+
+The break statement causes the loop to terminate immediately. break statements
+
+can also be used in for() and while() loops.
+
+
+*repeat
+
+Use “repeat” to repeat until we execute a break statement.
+
+repeat { statements }
+
+This causes the statements to be repeated endlessly.
+
+
+*next:
+
+The next statement causes control to return immediately to the top of the loop; it
+
+can also be used in any loop.
+
+***我們利用Fibonacci numbers to demo
+
+List all Fibonacci numbers less than 100. Use for() and if(condition) break.
+```{r}
+Fib1 <- 1
+Fib2 <- 1
+Fibonacci <- c(Fib1)
+for(j in 1:1000){
+if(Fib2 < 100){
+Fibonacci <- c(Fibonacci, Fib2)
+Fib1 <- Fibonacci[length(Fibonacci) - 1]
+Fib2 <- Fib1 + Fibonacci[length(Fibonacci)]
+}else{
+break
+}
+}
+Fibonacci
+```
+List all Fibonacci numbers less than 100. Use repeat{ } and break.
+```{r}
+Fib1 <- 1
+Fib2 <- 1
+Fibonacci <- c(Fib1)
+repeat
+{
+if(Fib2 < 100){
+Fibonacci <- c(Fibonacci, Fib2)
+Fib1 <- Fibonacci[length(Fibonacci) - 1]
+Fib2 <- Fib1 + Fibonacci[length(Fibonacci)]
+}else{
+break
+}
+}
+Fibonacci
+
+```
+List all Fibonacci numbers less than 100. Use repeat{ } and next.
+```{r}
+Fib1 <- 1
+Fib2 <- 1
+Fibonacci <- c(Fib1)
+for(j in 1:100){
+if(Fib2 >= 100) next
+Fibonacci <- c(Fibonacci, Fib2)
+Fib1 <- Fibonacci[length(Fibonacci) - 1]
+Fib2 <- Fib1 + Fibonacci[length(Fibonacci)]
+#print(j)
+}
+Fibonacci
+```
+# 5. Functions
+## (1)print( ) & cat( )
+print( ) shows with " " between characters.
+cat() shows without " " between characters. You can add ”\n" to make
+characters in a new line.
+```{r}
+x <- c("A", "B", "C", "D")
+print(x)
+
+cat(x)
+
+cat(x[1], "\n",
+x[2], "\n", sep = "" )
+```
+## (2)function( )
+
+Use function( ) when you only have one main code for evaluation and
+multiple possible input, like
+
+f (x) = 3x + 2, x = 2, 3, 4.
+
+f means a name of a function of input x when x = 2, 3, 4
+```{r}
+f <- function(x){
+3*x + 2
+}
+f(2); f(3); f(4)
+```
+examples:
+```{r}
+make.percent <- function(x){
+x.percent <- round(100*x, digits = 1)
+x.show <- paste(x.percent, "%", sep = "")
+cat(x.show)
+}
+make.percent(c(0.8933, 0.2344, 0.0764, 0.7736))
+
+```
+You must tell what will be return when you use the function by return( ) or
+invisible( ). If you don’t put return( ) at the end of the function, it will
+treat the last line as the result automatically
+```{r}
+f <- function(x){
+return(3*x + 2)
+}
+f(2)
+
+f <- function(x){
+res <- 3*x + 2
+}
+f(2)
+a <- f(2); a
+```
+### Functions for multiple input variables
+Use function( ) when you only have one main code for evaluation and
+
+multiple possible input, like
+
+f (x, y) = x^2^ +y^2^
+
+x, y = 2, 3, 4.
+
+f means a name of a function of input x and y when x, y = 2, 3, 4.
+```{r}
+f <- function(x, y){
+x^2 + y^2
+}
+f(2, 2); f(2, 3); f(2, 4)
+```
+examples
+```{r}
+make.percent <- function(x, x.digits){
+x.percent <- round(100*x, digits = x.digits)
+x.show <- paste(x.percent, "%", sep = "")
+return(x.show)
+}
+make.percent(c(0.8933, 0.2344, 0.0764, 0.7736), 0)
+
+make.percent(c(0.8933, 0.2344, 0.0764, 0.7736), 1)
+
+make.percent(c(0.8933, 0.2344, 0.0764, 0.7736), 2)
+```
+### Use function and return multiple outputs
+
+list( ) is a collection of multiple types of objects, like vectors, characters, numbers,
+
+Example:
+```{r}
+X <- list(a = 3, b = c(1,2,3,4,5), c = c("A", "B"))
+X
+```
+Use $ or  [ [ ] ]
+
+$: the name of the element.    [ [ ] ]: the location or the name of the element.
+
+```{r}
+X <- list(a = 3, b = c(1,2,3,4,5), c = c("A", "B"))
+X$a
+
+X[[2]]
+
+X[["c"]]
+```
+Use function( ) and list( )
+```{r}
+perfect.number <- function(a, b){
+k <- a
+res <- c()
+ans <- list()
+while(k < b){
+fac <- c()
+for(j in 1:k){
+if((k %% j) == 0) fac <- c(fac, j)
+}
+if(k == sum(fac[-length(fac)])) {
+res <- c(res, k)
+ans[[paste(k)]] <- fac[-length(fac)]
+}
+k <- k+1
+}
+ans$number <- res
+return(ans)
+}
+```
+Output: perfect number
+```{r}
+Ans <- perfect.number(1, 100)
+Ans
+
+```
+# 6. Related to data
+## (1)data.frame( )
+
+*Most data sets are stored in R as data frames.
+
+*These are like matrices, but with the columns having their own names.
+
+*Columns can be of different types from each other.
+
+Use the data.frame() to construct data frames from vectors:
+
+example:
+```{r}
+colors <- c("red", "yellow", "blue")
+numbers <- c(1, 2, 3)
+colors.and.numbers <- data.frame(colors, numbers,
+more.numbers = c(4, 5, 6))
+colors.and.numbers
+```
+
+### Difference from a matrices
+These are like matrices, but with the columns having their own names.
+
+Columns can be of different types from each othe
+
+```{r}
+X <- matrix(NA, 3, 3)
+X[,1] <- c("red", "yellow", "blue")
+X[,2] <- c(1, 2, 3)
+X[,3] <- c(4, 5, 6)
+colnames(X) <- c("colors", "numbers", "more.numbers")
+X
+```
+Use str() to examine the types of columns in the data frame.
+```{r}
+str(colors.and.numbers)
+colors <- c("red", "yellow", "blue")
+numbers <- c(1, 2, 3)
+colors.and.numbers <- data.frame(colors, numbers,
+more.numbers = c(4, 5, 6),
+stringsAsFactors = FALSE)
+str(colors.and.numbers)
+```
+More on data.frame(): add rows
+```{r}
+data1 <- data.frame(colors, numbers, more.numbers = c(4, 5, 6),stringsAsFactors = FALSE)
+data1 <- rbind(data1, c("black", 3, 5))
+data1
+```
+More on data.frame(): add columns
+```{r}
+colors <- c("red", "yellow", "blue")
+number1 <- c(1, 2, 3)
+number2 <- c(10, 11, 12)
+colors.and.numbers <- data.frame(colors, number1) ## construct data.frame
+colors.and.numbers$more.numbers <- c(4, 5, 6) ## add one column
+colors.and.numbers <- cbind(colors.and.numbers, number2) ## add one column
+colors.and.numbers
+```
+
+# 7. Graphics
+## Statistical Figure
+Given an arbitray vector x:
+
+1 Histogram: hist(x)
+
+2 Boxplot: boxplot(x)
+
+3 Density plot: plot(density(x))
+```{r} 
+x.norm <- rnorm(100, mean=0, sd=1)
+hist(x.norm)
+```
+
+```{r}
+boxplot(x.norm) 
+
+plot(density(x.norm))
+```
+
+
+For discrete variables x:
+
+1 Barchart: barplot(x)
+
+2 Piechart: pie(x)
+```{r}
+x <- sample(c(1:8), 100, replace=TRUE, prob=c(8:1))
+x <- table(x)
+names(x) <- c("A", "B", "C", "D", "E", "F", "G", "H")
+barplot(x)
+```
+
+```{r}
+pie(x)
+```
+Scatter plot is for the correlation between two variables.
+Use plot(x, y)
+```{r}
+x <- rnorm(100)
+y <- 3*x + rnorm(100, 0, 1)
+plot(x, y)
+
+cor(x, y)
+```
+### General plot function: plot(. . . )
+plot(x, y,
+type = "p", ### types of the plot
+pch = , ### the symbol in the plot
+main = NULL, ### the title of the plot
+lty = , ### the style of a line
+lwd = , ### the width of a line
+cex = , ### the size of an text
+bty="o", ### the box around the plot
+col = , ### the color of an object
+xlim = NULL, ylim = NULL, # the range of an axis
+sub = NULL, ### the sub-title of the plot
+xlab = NULL, ylab = NULL, # the name of an axis
+cex.main = ### the size of the title
+)
+
+## ggplot2 額外介紹
+```{r}
+library(ggplot2)
+library(dplyr)
+library(gapminder)
+#散佈圖
+#範例1
+data("mpg")
+mpg %>% head
+canvas<-ggplot(mpg,mapping=aes(x=cyl,y=cty))
+canvas #加畫布
+e <- ggplot(mpg, aes(cty, hwy))
+e + geom_point()
+#範例2
+gapminder_2007 <- gapminder %>%filter(year == 2007)
+scatter_plot <- ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point()
+scatter_plot
+#線圖
+north_asia <- gapminder %>%filter(country %in% c("China", "Japan", "Taiwan", "Korea, Rep."))
+line_plot <- ggplot(north_asia, aes(x = year, y = gdpPercap, colour = country)) +geom_line()
+line_plot
+
+#直方圖
+hist_plot <- ggplot(gapminder_2007, aes(x = gdpPercap)) +geom_histogram()
+hist_plot
+#調整bin
+hist_plot2 <- ggplot(gapminder_2007, aes(x = gdpPercap)) +geom_histogram(bins = 20)
+hist_plot2
+
+#盒鬚圖
+#單看一個數據
+box_plot <- ggplot(gapminder_2007, aes(x = 0,y=gdpPercap)) +geom_boxplot()
+box_plot
+#交叉比對
+box_plot <- ggplot(gapminder_2007, aes(x = continent, y = gdpPercap)) +
+  geom_boxplot()
+box_plot
+
+#長條圖
+gdpPercap_2007_na <- gapminder %>%filter(year == 2007 & country%in%c("China", "Japan", "Taiwan", "Korea, Rep."))
+bar_plot <- ggplot(gdpPercap_2007_na, aes(x = country, y = gdpPercap)) +
+  geom_bar(stat = "identity")
+bar_plot
+
+#建立樣本
+ice_cream_flavor<-rep(NA,100)
+for(i in 1:100){
+  ice_cream_flavor[i]<-sample(c("vanilla","chocolate","matcha","other"),size=1)
+}
+ice_cream_df<-data.frame(ice_cream_flavor=ice_cream_flavor)
+
+flavor<-names(table(ice_cream_flavor))
+votes<-as.vector(unname(table(ice_cream_flavor)))
+#建造函數
+#1 sin函數
+sin_df<-data.frame(x=c(pi,-pi))
+
+ggplot(sin_df,aes(x=x))+stat_function(fun=sin,geom="line")
+
+#2 自創函數
+X_square<-function(x){
+  return(x^2)
+}
+range<-data.frame(x=c(-3,3))
+ggplot(range,aes(x=x))+stat_function(fun=X_square,geom="line")
+
+#如何排版圖片
+library(ggplot2)
+
+library(gridExtra)
+
+plot1<-ggplot(iris, aes(x=Species, y=Sepal.Length))+
+  geom_boxplot()
+plot2<-ggplot(iris, aes(x=Species, y=Sepal.Width))+
+  geom_boxplot()
+plot3<-ggplot(iris, aes(x=Species, y=Petal.Length))+
+  geom_boxplot()
+plot4<-ggplot(iris, aes(x=Species, y=Petal.Width))+
+  geom_boxplot()
+grid.arrange(plot1, plot2, plot3, plot4, nrow=2, ncol=2)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
